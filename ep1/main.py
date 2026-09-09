@@ -23,12 +23,30 @@ RTOL = 1e-6
 MAXIT = 100
 
 def main():
+    quedaCorpo(t0=0, t1=2, v0=3, v1=20, m=1, g=10)
     return
 
 
 def quedaCorpo(t0: float, t1: float, v0: float, v1: float, m: float, g: float):
-    f = lambda k: (-np.exp(-t1*k/m) + np.exp(-t0*k/m))(m*g - v0*k)/(k*(v1 - v0))
+    f = lambda k: (-np.exp(-t1*k/m) + np.exp(-t0*k/m)) * (m*g - v0*k) - (k*(v1 - v0))
+    termo_exp = lambda t, k: (t*g + v0 - (t*v0*k/m))*np.exp(-t*k/m)
+    df = lambda k: (termo_exp(t1, k) - termo_exp(t0, k)) + v0 - v1
 
+    # Plot de f(k) para estimarmos o intervalo a ser utilizado
+    x = np.arange(0.001, 0.3, 0.001)
+    y = f(x)
+    plt.plot(x, y)
+    plt.savefig("plot_3_1.png")
+
+    k_aproximado = encontraRaiz(0.0001, 0.2, 0.2, f, df)
+    print(f"Valor aproximado: k={k_aproximado}")
+
+    # Testes de sanidade: conferindo os valores de v(t)
+    # em t=0 e t=2
+    vt = lambda t: (m*g - (m*g - v0*k_aproximado)*np.exp(-k_aproximado*t/m))/k_aproximado
+    print(f"Velocidades calculadas com o valor de k encontrado:")
+    print(f"v(0) = {vt(0)}")
+    print(f"v(2) = {vt(2)}")
     return
 
 
