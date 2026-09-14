@@ -18,12 +18,14 @@ import matplotlib.pyplot as plt
 
 # Defini esses números só para testar o funcionamento do código, depois
 # podemos colocar valores melhores para o relatório
-ATOL = 1e-6
-RTOL = 1e-6
-MAXIT = 100
+ATOL = 1e-20
+RTOL = 1e-20
+MAXIT = 1000
 
 def main():
     quedaCorpo(t0=0, t1=2, v0=3, v1=20, m=1, g=10)
+    alturaFios(h=10, dy=0.5)
+
     return
 
 
@@ -50,7 +52,18 @@ def quedaCorpo(t0: float, t1: float, v0: float, v1: float, m: float, g: float):
     return
 
 
-def alturaFios():
+def alturaFios(h: float, dy: float, ):
+    f = lambda beta: beta*(np.cosh(h/beta) - np.cosh(0)) - dy
+    df = lambda beta: (f(beta) + dy)/beta + beta*(-h*np.sinh(h/beta)/(h**2))
+
+    # Plot de f(beta)
+    x = np.arange(20, 200, 0.1)
+    y = f(x)
+    plt.plot(x, y)
+    plt.savefig("plot_3_2.png")
+
+    beta_aproximado = encontraRaiz(1, 500, 1, f, df)
+    print(f"Valor aproximado: beta={beta_aproximado}")
     return
 
 
@@ -64,6 +77,8 @@ def encontraRaiz(a: float, b: float, x0: float, f: function, df: function) -> fl
     x1 = x0
     while (not acabou):
         if deveUsarMetodoDeNewton(a, b, x0, x1, f, df):
+            print("iterando com newton")
+            x0 = x1
             x1 = newton(x0, f, df)
             # Atualiza o intervalo [a,b]
             if x1<x0:
@@ -71,17 +86,18 @@ def encontraRaiz(a: float, b: float, x0: float, f: function, df: function) -> fl
             else:
                 a = x1
         else:
+            print("iterando com dicotomia")
+            x0 = x1
             a, b, x1 = dicotomia(a, b, f)
 
         iteracao += 1
         acabou = devePararExecucao(x0, x1, f, iteracao)
-        x0 = x1
 
     return x1
 
 
 def newton(x0: float, f: function, df: function) -> float:
-    return x0 - (f(x0)/df)(x0)
+    return x0 - (f(x0)/df(x0))
 
 
 def dicotomia(a: float, b: float, f: function) -> tuple[float, float]:
