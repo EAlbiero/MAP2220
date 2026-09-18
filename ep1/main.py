@@ -40,7 +40,7 @@ def quedaCorpo(t0: float, t1: float, v0: float, v1: float, m: float, g: float):
     plt.plot(x, y)
     plt.savefig("plot_3_1.png")
 
-    k_aproximado = encontraRaiz(0.0001, 0.2, 0.2, f, df)
+    k_aproximado = encontraRaiz(0.0001, 0.2, f, df)
     print(f"Valor aproximado: k={k_aproximado}")
 
     # Testes de sanidade: conferindo os valores de v(t)
@@ -50,7 +50,6 @@ def quedaCorpo(t0: float, t1: float, v0: float, v1: float, m: float, g: float):
     print(f"v(0) = {vt(0)}")
     print(f"v(2) = {vt(2)}")
     return
-
 
 def alturaFios(h: float, dy: float, ):
     f = lambda beta: beta*(np.cosh(h/beta) - np.cosh(0)) - dy
@@ -62,26 +61,26 @@ def alturaFios(h: float, dy: float, ):
     plt.plot(x, y)
     plt.savefig("plot_3_2.png")
 
-    beta_aproximado = encontraRaiz(1, 500, 1, f, df)
+    beta_aproximado = encontraRaiz(1, 500, f, df)
     print(f"Valor aproximado: beta={beta_aproximado}")
     return
-
 
 def quadratura():
     return
 
-
-def encontraRaiz(a: float, b: float, x0: float, f: function, df: function) -> float:
+def encontraRaiz(a: float, b: float, f: function, df: function) -> float:
     acabou = False
     iteracao = 0
+    x0 = extremoMaisProximo(a, b, f)
     x1 = x0
     while (not acabou):
         if deveUsarMetodoDeNewton(a, b, x0, x1, f, df):
             print("iterando com newton")
             x0 = x1
             x1 = newton(x0, f, df)
-            # Atualiza o intervalo [a,b]
-            if x1<x0:
+            # Atualiza o intervalo [a,b] de acordo com onde
+            # f troca de sinal
+            if np.sign(f(a)) != np.sign(f(x1)):
                 b = x1
             else:
                 a = x1
@@ -95,10 +94,8 @@ def encontraRaiz(a: float, b: float, x0: float, f: function, df: function) -> fl
 
     return x1
 
-
 def newton(x0: float, f: function, df: function) -> float:
     return x0 - (f(x0)/df(x0))
-
 
 def dicotomia(a: float, b: float, f: function) -> tuple[float, float]:
     m = (a+b)/2
@@ -114,7 +111,6 @@ def dicotomia(a: float, b: float, f: function) -> tuple[float, float]:
     # (a, b) é retornado com redundância para facilitar o uso do
     # intervalo em outras funções
     return a, b, m
-
 
 def devePararExecucao(x0: float, x1: float, f: function, iteracao: int) -> bool:
     global ATOL
@@ -132,8 +128,12 @@ def devePararExecucao(x0: float, x1: float, f: function, iteracao: int) -> bool:
 
     return False
 
-
 def deveUsarMetodoDeNewton(a: float, b: float, x0: float, x1: float, f: function, df: function) -> float:
     return ( (x1-a)*df(x1) - f(x1) )*( (x1-b)*df(x1) - f(x1) ) < 0 and 2*abs(f(x1)) < abs(df(x1)*(x1-x0))
+
+def extremoMaisProximo(a: float, b: float, f: function) -> float:
+    if np.sign(f(a)) == np.sign(f((b-a)/2)):
+        return b
+    return a
 
 main()
