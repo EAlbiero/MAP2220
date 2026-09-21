@@ -5,17 +5,16 @@ Enzo Albiero Mattos - 12557060
 
 -------------------------------------------
 
-Este programa utiliza uma modificação do Método de Newton para encontrar aproximações de parâmetros utilizados em aplicações da física e matemática. Mais especificamente, este programa resolve 3 problemas:
+Este programa utiliza uma modificação do Método de Newton para encontrar aproximações de parâmetros utilizados em aplicações da física e matemática. Mais especificamente, este programa resolve 2 problemas:
 
 1. Queda de um corpo sob a ação da resistência do ar
 2. Altura de fios de transmissão de eletricidade
-3. Quadratura de Gauss-Legendre
 
 Cada problema pode ser executado da seguinte forma:
 
 $ python main.py <E> <a> <b>
 
-Em que E está em {1, 2, 3} e indica qual dos 3 problemas será computado. Além disso, para os problemas 1 e 2, o usuário deve também fornecer os extremos a e b do intervalo que será utilizado para procurar a aproximação do problema. Nestes casos, é gerada uma figura salva no diretório atual em .png para que se possa analisar o comportamento da função no intervalo. Os parâmetros a e b não devem ser fornecidos para o problema 3.
+Em que E está em {1, 2} e indica qual dos 2 problemas será computado. Além disso, o usuário deve também fornecer os extremos a e b do intervalo que será utilizado para procurar a aproximação do problema. Nestes casos, é gerada uma figura salva no diretório atual em .png para que se possa analisar o comportamento da função no intervalo. 
 
 Uma vez que o programa chegue ao fim do método interativo, será impressa uma mensagem informando qual das seguintes condições de parada foram atingidas:
 

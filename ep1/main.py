@@ -86,6 +86,12 @@ def quadratura():
     return
 
 def encontraRaiz(a: float, b: float, f: function, df: function) -> float:
+    """
+    Dado um intervalo [a, b], uma função f e sua derivada df, utiliza o método de 
+    newton modificado para calcular uma raíz aproximada de f. Assume que
+    a raíz pertence ao intervalo [a,b]. Retorna o valor obtido após um dos critérios
+    de parada ser verificado
+    """
     acabou = False
     iteracao = 0
     x0 = extremoMaisProximo(a, b, f)
@@ -117,7 +123,6 @@ def dicotomia(a: float, b: float, f: function) -> tuple[float, float]:
     m = (a+b)/2
     fm = f(m)
     fa = f(a)
-    fb = f(b)
 
     if fa*fm < 0:
         b = m
@@ -129,6 +134,10 @@ def dicotomia(a: float, b: float, f: function) -> tuple[float, float]:
     return a, b, m
 
 def devePararExecucao(x0: float, x1: float, f: function, iteracao: int) -> bool:
+    """
+    Checa se *algum* critério de parada é verificado. Se ao menos um deles for verdadeiro,
+    retorna True. Caso contrário, retorna False
+    """
     global ATOL
     global RTOL
 
@@ -149,6 +158,10 @@ def deveUsarMetodoDeNewton(a: float, b: float, x0: float, x1: float, f: function
     return ( (x1-a)*df(x1) - f(x1) )*( (x1-b)*df(x1) - f(x1) ) < 0 and 2*abs(f(x1)) < abs(df(x1)*(x1-x0))
 
 def extremoMaisProximo(a: float, b: float, f: function) -> float:
+    """
+    Dado um intervalo [a, b] contendo uma raíz de f, retorna o extremo mais próximo
+    da raiz
+    """
     if np.sign(f(a)) == np.sign(f((b-a)/2)):
         return b
     return a
